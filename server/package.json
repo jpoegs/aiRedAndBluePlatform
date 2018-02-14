@@ -1,0 +1,16 @@
+{
+  "name": "red-blue-platform",
+  "version": "0.0.0",
+  "private": true,
+  "contributors": [
+    "Alec Bernardi <bernaa2@rpi.edu"
+  ],
+  "repository": "https://github.com/chris-j-tang/aiRedAndBluePlatform",
+  "license": "MIT",
+  "main": "src/app.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "start": "node src/app.js"
+  }
+}
