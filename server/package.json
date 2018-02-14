@@ -8,7 +8,9 @@
   "repository": "https://github.com/chris-j-tang/aiRedAndBluePlatform",
   "license": "MIT",
   "main": "src/app.js",
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.16.2"
+  },
   "devDependencies": {},
   "scripts": {
     "start": "node src/app.js"
