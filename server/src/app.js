@@ -5,6 +5,11 @@ const Manager = require('./manager');
 
 let manager = new Manager();
 
+app.use(function (req,res,next) {
+  console.log('/' + req.method + ' ' + req.url);
+  next();
+});
+
 app.route('/game/:gameId/')
   // Starting a game
   .post(function (req, res) {

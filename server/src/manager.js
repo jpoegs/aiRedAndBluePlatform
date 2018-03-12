@@ -14,7 +14,7 @@ class Manager {
   }
 
   removeGame(id) {
-    game = this.games[id];
+    let game = this.games[id];
     if (game) {
       delete this.games[id];
       return game.state;
