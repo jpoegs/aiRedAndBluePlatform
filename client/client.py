@@ -21,6 +21,8 @@ def main():
 
     while command[0] != 'quit':
         command = raw_input('> ').split()
+        while len(command) == 0:
+            command = raw_input('> ').split()
         if command[0] == 'start':
             if len(command) == 2:
                 startGame(server, {'game_id': command[1]})
@@ -49,10 +51,17 @@ def poll(server, method, url):
         response.read()
         conn.close()
         return response
+    except httplib.InvalidURL, err:
+        print 'Error: ', err.message # usually means invalid/nonnumeric port
     except IOError, err:
-        if (errno.errorcode[err.errno] == 'ECONNREFUSED'):
+        if (errno.errorcode[err.errno] == 'ENOEXEC'):
+            print 'Error: Cannot reach the given URL. It may be incorrect, or your internet may be down.'
+        elif (errno.errorcode[err.errno] == 'ECONNREFUSED'):
             print 'Error: Connection refused. Your URL may be incorrect, or the server may be down.'
-            return None
+        else:
+            print IOError, err
+    except:
+        return None
 
 def startGame(server, details):
     S_GAME_STARTED = 201
