@@ -38,12 +38,17 @@
     // create an array with nodes
 	var redScore = 0;
 	var blueScore = 0
-	var timeLimit = 30 * 1000;
+	var timeLimit = 5 * 1000;
 	var curTime = timeLimit;
 	
+	var updateTime;
+	var timer;
 	startTimer();
 	function startTimer() {
-		var updateTime = setInterval(function() {
+		clearInterval(updateTime);
+		clearTimeout(timer);
+		curTime = timeLimit;
+		updateTime = setInterval(function() {
 			var t = (curTime / 1000).toString();
 			if(curTime % 1000 == 0)
 			{
@@ -53,8 +58,9 @@
 			curTime -= 100;
 		},100);
 		
-		var time = setTimeout(function() {
+		timer = setTimeout(function() {
 			clearInterval(updateTime);
+			document.getElementById("timeTextValue").innerHTML = "0.0";
 		}, timeLimit);
 	}
 	
@@ -244,6 +250,7 @@
 				setRedScore(redScore);
 				turn = 1;
 			}
+			startTimer();
 		}
 	});
 	  
