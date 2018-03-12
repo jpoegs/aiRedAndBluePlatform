@@ -74,7 +74,7 @@
 		document.getElementById("blueScoreBarText").innerHTML = score;
 	}
 	
-	var nodeCount = 25;
+	var nodeCount = 50;
 	var nodes = createNodes(nodeCount);
     var visNodes = new vis.DataSet(nodes);
 	function createNodes(num)
@@ -86,6 +86,8 @@
 			{
 				id: i, 
 				label: i.toString(),
+				borderWidth: 2,
+				borderWidthSelected: 3,
 				color: 
 					{
 						border: '#444444',
@@ -96,6 +98,9 @@
 							background: '#999999'
 						}
 					},
+				font: {
+					size: 24
+				},
 				team: 0
 			};
 			nodes.push(n);
@@ -126,7 +131,7 @@
 	}
 	
     // create an array with edges
-    var visEdges = new vis.DataSet(createEdges(nodeCount, 0.1));
+    var visEdges = new vis.DataSet(createEdges(nodeCount, 0.03));
 
     // create a network
     var container = document.getElementById('mynetwork');
@@ -180,8 +185,8 @@
 						background: '#FF0000'
 					  }
 					});
-					nodes[selectedNodeId - 1].team == 1;
-					redScore++;
+				nodes[selectedNodeId - 1].team = 1;
+				redScore++;
 				for(var i = 0; i < params.edges.length; i++)
 				{
 					var edgeId = params.edges[i];
@@ -220,8 +225,8 @@
 						background: '#0000FF'
 					  }
 					});
-					nodes[selectedNodeId - 1].team == 2;
-					blueScore++;
+				nodes[selectedNodeId - 1].team = 2;
+				blueScore++;
 				for(var i = 0; i < params.edges.length; i++)
 				{
 					var edgeId = params.edges[i];
@@ -252,6 +257,7 @@
 			}
 			startTimer();
 		}
+		network.unselectAll();
 	});
 	  
 	
