@@ -18,17 +18,17 @@
 	<div id="scoreBar">
 		<div id="redScore">	
 			<p id="scoreBarText">Score</p>
-			<p id="scoreBarTextValue">94</p>
+			<p id="redScoreBarText">0</p>
 		</div>
 		
 		<div id="blueScore">	
 			<p id="scoreBarText">Score</p>
-			<p id="scoreBarTextValue">90</p>
+			<p id="blueScoreBarText">0</p>
 		</div>
 	
 		<div id="yourGameSession">	
 			<p id="scoreBarText">Time</p>
-			<p id="scoreBarTextValue">0:30:29</p>
+			<p id="timeTextValue">0</p>
 		</div>
 	</div>
 	
@@ -36,9 +36,41 @@
 	
 	<script type="text/javascript">
     // create an array with nodes
+	var redScore = 0;
+	var blueScore = 0
+	var timeLimit = 30 * 1000;
+	var curTime = timeLimit;
+	
+	startTimer();
+	function startTimer() {
+		var updateTime = setInterval(function() {
+			var t = (curTime / 1000).toString();
+			if(curTime % 1000 == 0)
+			{
+				t += ".0";
+			}
+			document.getElementById("timeTextValue").innerHTML = t;
+			curTime -= 100;
+		},100);
+		
+		var time = setTimeout(function() {
+			clearInterval(updateTime);
+		}, timeLimit);
+	}
+	
+	function setRedScore(score)
+	{
+		document.getElementById("redScoreBarText").innerHTML = score;
+	}
+	
+	function setBlueScore(score)
+	{
+		document.getElementById("blueScoreBarText").innerHTML = score;
+	}
+	
 	var nodeCount = 25;
-    var visNodes = new vis.DataSet(createNodes(nodeCount));
-
+	var nodes = createNodes(nodeCount);
+    var visNodes = new vis.DataSet(nodes);
 	function createNodes(num)
 	{
 		var nodes = [];
@@ -57,8 +89,8 @@
 							border: '#111111',
 							background: '#999999'
 						}
-					}
-					
+					},
+				team: 0
 			};
 			nodes.push(n);
 		}
@@ -105,22 +137,112 @@
 		{
 			dragNodes: false,
 			dragView: false
+		},
+		layout:
+		{
+			randomSeed: 0
 		}
 	};
 
     // initialize your network!
     var network = new vis.Network(container, data, options);
+	
+	
+	/*
+    network.cluster(clusterOptionsByData);
+	
+	network.on("selectNode", function(params) {
+        if (params.nodes.length == 1) {
+            if (network.isCluster(params.nodes[0]) == true) {
+                network.clustering.updateClusteredNode(params.nodes[0], {shape : 'star'});
+            }
+        }
+    });*/
+	var turn = 1;
+	network.on("selectNode", function (params) {
+		var selectedNodeId = params.nodes[0];
+		var node = network.body.nodes[selectedNodeId];
+		if(nodes[selectedNodeId].team == 0)
+		{
+			if(turn == 1)
+			{
+				node.setOptions(
+				  {
+					color:
+					  {
+						border: '#000000',
+						background: '#FF0000'
+					  }
+					});
+					console.log(params);
+					console.log(network.body.edges);
+				for(var i = 0; i < params.edges.length; i++)
+				{
+					var edgeId = params.edges[i];
+					var adjId = network.body.edges[edgeId].to.id != selectedNodeId ? network.body.edges[edgeId].to.id : network.body.edges[edgeId].from.id;
+					var n = network.body.nodes[adjId];
+					n.setOptions(
+					  {
+						color:
+						  {
+							border: '#000000',
+							background: '#FF0000'
+						  }
+						});
+					nodes[adjId].team = 1;
+				}
+				turn = 2;
+			}
+			else
+			{
+				node.setOptions(
+				  {
+					color:
+					  {
+						border: '#000000',
+						background: '#0000FF'
+					  }
+					});
+				for(var i = 0; i < params.edges.length; i++)
+				{
+					var edgeId = params.edges[i];
+					var adjId = network.body.edges[edgeId].to.id != selectedNodeId ? network.body.edges[edgeId].to.id : network.body.edges[edgeId].from.id;
+					var n = network.body.nodes[adjId];
+					n.setOptions(
+					  {
+						color:
+						  {
+							border: '#000000',
+							background: '#0000FF'
+						  }
+						});
+					nodes[adjId].team = 2;
+				}
+				turn = 1;
+			}
+		}
+	});
+	  
+	
+	document.getElementById("mynetwork").onclick = function (event)
+	{
+		console.log(network.getSelectedNodes());
+		//nodes[network.getSelectedNodes()[0] - 1].color.background = '#FF0000';
+		//network = new vis.Network(container, data, options);
+	};
+	
 	</script>
 	
 	
 </body>
 
 <script type="text/javascript">
+	/*
 	var socket = io();
 	
 	socket.on('disconnect', function() {
 		
-	});
+	});*/
 	
 	window.onload = function() {
 				
@@ -130,7 +252,7 @@
 			host: sessionStorage.getItem("host"),
 			socketID: "null"
 		};
-		
+		/*
 		socket.on("connection-response", function(res) {
 			console.log("The game has been successfully created!");
 		});
@@ -146,7 +268,7 @@
 		socket.on('end-game', function(gameData) {
 			sessionStorage.setItem("gameData", gameData);
 			window.location.replace("Results.html");
-		});
+		});*/
 	};
 </script>
 </html>

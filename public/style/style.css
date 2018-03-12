@@ -94,7 +94,7 @@
 	margin: 0px;
 }
 
-#scoreBarTextValue {
+#redScoreBarText, #blueScoreBarText, #timeTextValue {
 	font-size: 36px;
 	color: white;
 	text-align: center;
