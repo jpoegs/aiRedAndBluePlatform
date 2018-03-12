@@ -162,7 +162,7 @@
 	network.on("selectNode", function (params) {
 		var selectedNodeId = params.nodes[0];
 		var node = network.body.nodes[selectedNodeId];
-		if(nodes[selectedNodeId].team == 0)
+		if(nodes[selectedNodeId - 1].team == 0)
 		{
 			if(turn == 1)
 			{
@@ -174,8 +174,8 @@
 						background: '#FF0000'
 					  }
 					});
-					console.log(params);
-					console.log(network.body.edges);
+					nodes[selectedNodeId - 1].team == 1;
+					redScore++;
 				for(var i = 0; i < params.edges.length; i++)
 				{
 					var edgeId = params.edges[i];
@@ -189,8 +189,19 @@
 							background: '#FF0000'
 						  }
 						});
-					nodes[adjId].team = 1;
+						if(nodes[adjId - 1].team == 0)
+						{
+							redScore++;
+						}
+						else if(nodes[adjId - 1].team == 2)
+						{
+							blueScore--;
+							redScore++;
+						}
+					nodes[adjId - 1].team = 1;
 				}
+				setRedScore(redScore);
+				setBlueScore(blueScore);
 				turn = 2;
 			}
 			else
@@ -203,6 +214,8 @@
 						background: '#0000FF'
 					  }
 					});
+					nodes[selectedNodeId - 1].team == 2;
+					blueScore++;
 				for(var i = 0; i < params.edges.length; i++)
 				{
 					var edgeId = params.edges[i];
@@ -216,8 +229,19 @@
 							background: '#0000FF'
 						  }
 						});
-					nodes[adjId].team = 2;
+						if(nodes[adjId - 1].team == 0)
+						{
+							blueScore++;
+						}
+						else if(nodes[adjId - 1].team == 1)
+						{
+							redScore--;
+							blueScore++;
+						}
+					nodes[adjId - 1].team = 2;
 				}
+				setBlueScore(blueScore);
+				setRedScore(redScore);
 				turn = 1;
 			}
 		}
