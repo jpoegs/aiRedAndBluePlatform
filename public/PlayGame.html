@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<title>Red & Blue Game - Play Game</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="style/style.css" >
+	<link rel="stylesheet" href="style/vis.min.css" >
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="jquery-1.12.1.js"></script>
+	<script src="RedBlueGame.js"></script>
+	<script src="vis.min.js"></script>
+	
+</head>
+
+<body>
+	<div id="scoreBar">
+		<div id="redScore">	
+			<p id="scoreBarText">Score</p>
+			<p id="scoreBarTextValue">94</p>
+		</div>
+		
+		<div id="blueScore">	
+			<p id="scoreBarText">Score</p>
+			<p id="scoreBarTextValue">90</p>
+		</div>
+	
+		<div id="yourGameSession">	
+			<p id="scoreBarText">Time</p>
+			<p id="scoreBarTextValue">0:30:29</p>
+		</div>
+	</div>
+	
+	<div id="mynetwork"></div>
+	
+	<script type="text/javascript">
+    // create an array with nodes
+	var nodeCount = 25;
+    var visNodes = new vis.DataSet(createNodes(nodeCount));
+
+	function createNodes(num)
+	{
+		var nodes = [];
+		for(var i = 1; i <= num; i++)
+		{
+			var n = 
+			{
+				id: i, 
+				label: i.toString(),
+				color: 
+					{
+						border: '#444444',
+						background: '#CCCCCC',
+						highlight:
+						{
+							border: '#111111',
+							background: '#999999'
+						}
+					}
+					
+			};
+			nodes.push(n);
+		}
+		return nodes;
+	}
+	
+	function createEdges(num, p)
+	{
+		var edges = [];
+		for(var i = 1; i <= num; i++)
+		{
+			for(var k = 1; k <= num; k++)
+			{
+				if(i != k)
+				{
+					var rand = Math.random();
+					if(rand < p)
+					{
+						var e = {from: i, to: k};
+						edges.push(e);
+					}
+				}
+			}
+		}
+		console.log(edges.length);
+		return edges;
+	}
+	
+    // create an array with edges
+    var visEdges = new vis.DataSet(createEdges(nodeCount, 0.1));
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+
+    // provide the data in the vis format
+    var data = {
+        nodes: visNodes,
+        edges: visEdges
+    };
+   	
+	var options = {
+		manipulation: false,
+		interaction:
+		{
+			dragNodes: false,
+			dragView: false
+		}
+	};
+
+    // initialize your network!
+    var network = new vis.Network(container, data, options);
+	</script>
+	
+	
+</body>
+
+<script type="text/javascript">
+	var socket = io();
+	
+	socket.on('disconnect', function() {
+		
+	});
+	
+	window.onload = function() {
+				
+		var data = {
+			playerName: sessionStorage.getItem("playerName"),
+			sessionID: sessionStorage.getItem("sessionID"),
+			host: sessionStorage.getItem("host"),
+			socketID: "null"
+		};
+		
+		socket.on("connection-response", function(res) {
+			console.log("The game has been successfully created!");
+		});
+		
+		socket.on('initialize-game', function(names, socketIDs) {
+			
+		});
+		
+		socket.on('timer', function(time) {
+			document.getElementById("time").innerHTML = time;
+		});
+				
+		socket.on('end-game', function(gameData) {
+			sessionStorage.setItem("gameData", gameData);
+			window.location.replace("Results.html");
+		});
+	};
+</script>
+</html>
